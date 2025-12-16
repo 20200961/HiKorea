@@ -1,0 +1,29 @@
+* bulletin.html -> 게시판화면
+
+* course.html -> 코스추천화면
+
+* gallery.html -> 갤러리화면
+
+* login.html -> 로그인화면(회원가입도 있음)
+-- loginCheck.php 로그인PHP
+-- memberWrite.php 회원가입PHP
+
+* login_bulletin.html -> 로그인한후 게시판화면
+-- delete_post 게시판글삭제PHP
+-- get_post 특정글불러오기PHP
+-- get_posts DB에저장돼있는글다가져와보이기PHP
+-- write_post 게시판글쓰기PHP
+
+* post.html -> 글누르면 해당 글을 확인할수있는화면
+
+* login_course.html -> 로그인한후 코스추천화면
+
+* login_gallery.html -> 로그인한후 갤러리화면
+
+* login_main.html -> 로그인한후 앱 메인화면
+
+* login_map.html -> 로그인한후 지도화면
+
+* main.html -> 앱시작화면(기본)
+
+* map.html -> 지도화면

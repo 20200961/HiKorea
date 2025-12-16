@@ -1,0 +1,24 @@
+<board(게시판) DB>
+(ID:USER, PW:1234, DBNAME:users , TABLENAME:user_information)
+
+1.DB생성
+sudo mysql –u root –p
+CREATE DATABASE users default CHARACTER SET UTF8;
+
+2.ID생성
+GRANT ALL PRIVILEGES ON users.* TO USER @localhost IDENTIFIED BY '1234';
+
+3. 로그인
+mysql -u USER -p
+
+4.데베 접속
+use users;
+
+5.테이블생성
+CREATE TABLE board(
+id int(11) primary key auto_increment,
+title varchar(255) DEFAULT NULL,
+content text DEFAULT NULL,
+author varchar(255) DEFAULT NULL,
+created_at timestamp DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

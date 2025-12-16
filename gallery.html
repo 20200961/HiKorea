@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Brush+Script&family=Orbit&display=swap" rel="stylesheet">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>갤러리 화면</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nanum Brush Script', cursive;
+        }
+
+        body {
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #f0f3fa;
+            margin: 0;
+            padding: 0;
+            z-index: 1;
+        }
+
+        .wrapper {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            height: 100%;
+            width: 50%;
+            background: #D5DEEF;
+            transition: all 0.6s ease-in-out;
+            z-index: 1;
+        }
+
+        #active:checked~.wrapper {
+            right: 0;
+        }
+
+        .menu-btn {
+            position: absolute;
+            z-index: 2;
+            right: 10px;
+            top: 10px;
+            height: 50px;
+            width: 50px;
+            text-align: center;
+            line-height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .menu-btn span,
+        .menu-btn:before,
+        .menu-btn:after {
+            content: "";
+            position: absolute;
+            top: calc(50% - 1px);
+            left: 30%;
+            width: 40%;
+            border-bottom: 2px solid #000;
+            transition: transform .6s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .menu-btn:before {
+            transform: translateY(-8px);
+        }
+
+        .menu-btn:after {
+            transform: translateY(8px);
+        }
+
+        .close {
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transition: background .6s;
+        }
+
+        /* closing animation */
+        #active:checked+.menu-btn span {
+            transform: scaleX(0);
+        }
+
+        #active:checked+.menu-btn:before {
+            transform: rotate(45deg);
+            border-color: #fff;
+        }
+
+        #active:checked+.menu-btn:after {
+            transform: rotate(-45deg);
+            border-color: #fff;
+        }
+
+        .wrapper ul {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            height: 90%;
+            transform: translate(-50%, -50%);
+            list-style: none;
+            text-align: center;
+        }
+
+        .wrapper ul li {
+            height: 10%;
+            margin: 15px 0;
+        }
+
+        .wrapper ul li a {
+            width: 150px;
+            text-decoration: none;
+            font-size: 30px;
+            font-weight: 500;
+            padding: 5px 30px;
+            color: #000;
+            border-radius: 50px;
+            position: absolute;
+            line-height: 50px;
+            margin: 5px 30px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            transition: transform .6s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .wrapper ul li a:after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            transform: scaleY(0);
+            z-index: -1;
+            transition: transform 0.3s ease;
+        }
+
+        .wrapper ul li a:hover:after {
+            transform: scaleY(1);
+        }
+
+        .wrapper ul li a:hover {
+            background: #ffffff;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        #active:checked~.wrapper ul li a {
+            opacity: 1;
+        }
+
+        .wrapper ul li a {
+            transition: opacity 1.2s, transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+            transform: translateX(100px);
+        }
+
+        #active:checked~.wrapper ul li a {
+            transform: none;
+            transition-timing-function: ease, cubic-bezier(.1, 1.3, .3, 1);
+            transition-delay: .6s;
+            transform: translateX(-100px);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(calc(50% - 10px), 1fr));
+            gap: 10px;
+            max-width: 100%;
+            padding: 10px;
+            /* 이미지 간의 간격을 주기 위해 padding 추가 */
+        }
+
+        .gallery li {
+            list-style: none;
+        }
+
+        .image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery img {
+            width: 100%;
+            display: block;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            transition: transform 1000ms;
+            box-shadow: none;
+            /* 그림자 효과 제거 */
+        }
+
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .category-button {
+            margin: 0 10px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            width: 80px;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .category-button:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .image-description {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            /* 투명 배경 */
+            color: black;
+            padding: 10px;
+            opacity: 0;
+            /* 기본적으로 보이지 않도록 설정 */
+            transition: opacity 0.5s ease;
+            text-align: center;
+        }
+
+        .desc {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            background: #B1C9EF;
+        }
+
+        hr {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            height: 150px;
+            line-height: 150px;
+        }
+
+        .imgblank {
+            background: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <input type="checkbox" id="active">
+    <label for="active" class="menu-btn"><span></span></label>
+    <label for="active" class="close"></label>
+    <div class="wrapper">
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="map.html">Map</a></li>
+            <li><a href="course.html">Course</a></li>
+            <li><a href="bulletin.html">Bulletin</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+    </div>
+    <div class="desc">
+        <h1>관광 갤러리</h1>
+        <hr>
+        <div class="category-buttons">
+            <div class="category-button" onclick="changeCategory('category1')">서울</div>
+            <div class="category-button" onclick="changeCategory('category2')">인천</div>
+            <div class="category-button" onclick="changeCategory('category3')">부산</div>
+        </div>
+        <ul class="gallery">
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+            <li>
+                <div class="image-container">
+                    <img class="imgblank">
+                    <div class="image-description"></div>
+                </div>
+            </li>
+        </ul>
+        <script>
+            function changeCategory(category) {
+                const galleryImages = document.querySelectorAll('.gallery img');
+                const categoryImages = {
+                    'category1': [
+                        'https://mediahub.seoul.go.kr/uploads/mediahub/2021/04/sPHkAAyXDMGfKojNdluIiYduAbKVGcNr.png',
+                        'https://mediahub.seoul.go.kr/uploads/mediahub/2021/01/48c589811ec9430b98133871a8bbd9de.jpg',
+                        'https://tong.visitkorea.or.kr/cms/resource/54/2947254_image2_1.jpg',
+                        'https://images.pexels.com/photos/19022630/pexels-photo-19022630.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load',
+                        'https://koreandramaland.com/wp-content/uploads/2020/02/g-guesthouse-kdrama-filming-location-photo-copyright-thom-musni-february-2020-koreandramaland-1.jpg',
+                        'https://www.forwarder.kr/data/editor/2003/thumb-54b65d1744c8881ae660c8d4c62b63d1_1584592976_0354_780x585.jpg',
+                        'https://img.freepik.com/premium-photo/sunrise-of-bukchon-hanok-village-in-seoul_40171-5.jpg',
+                        'https://korean.visitseoul.net/comm/getImage?srvcId=MEDIA&parentSn=24595&fileTy=MEDIA&fileNo=1',
+                        'https://korean.visitseoul.net/comm/getImage?srvcId=MEDIA&parentSn=24598&fileTy=MEDIA&fileNo=1',
+                        'https://www.royalpalace.go.kr/images/sub/gbg.jpg'
+                    ],
+                    'category2': [
+                        'http://www.my-land.co.kr/index/data/cheditor4/1505/153152d25c15722d79f3e4d53da67b37_AnhYamkMpUYHLjhLWN3.JPG',
+                        'https://www.icjg.go.kr/humanframe/theme/culture/assets/images/story/story02/01/story-pic-01.jpg',
+                        'https://modo-phinf.pstatic.net/20181116_260/154233225427529Rwt_JPEG/mosaW5ZVte.jpeg',
+                        'https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202310/12/14adfa9e-00f0-4626-b095-9c6e93708d14.jpg',
+                        'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F9967D4485B8FA6F00A',
+                        'https://a.cdn-hotels.com/gdcs/production197/d1339/6168177f-9965-4cd9-86f4-9d321d5fb6d7.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://a.cdn-hotels.com/gdcs/production82/d137/3c5abc26-56ef-483d-9b7f-cbe5e21825d7.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://a.cdn-hotels.com/gdcs/production136/d539/894bfa4b-27fd-4986-bd4f-8527cfe988a6.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://a.cdn-hotels.com/gdcs/production193/d1596/ad5d579f-3b78-4618-9060-0b55ff66f790.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://a.cdn-hotels.com/gdcs/production100/d1921/40698f68-538f-4606-82e4-35fca19a8700.jpg?impolicy=fcrop&w=1600&h=1066&q=medium'
+                    ],
+                    'category3': [
+                        'https://img1.yna.co.kr/etc/inner/KR/2021/08/11/AKR20210811109300805_11_i_P4.jpg',
+                        'https://img.khan.co.kr/news/2017/06/02/l_2017060201000281100016431.webp',
+                        'https://cdn.topstarnews.net/news/photo/202212/14863305_1051884_3631.jpg',
+                        'https://a.cdn-hotels.com/gdcs/production143/d1357/d7d697ea-4330-49cd-b4da-474d24f9d767.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://a.cdn-hotels.com/gdcs/production154/d406/fc3a2d0e-7fd3-4102-aef3-edd8c4069eb7.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://a.cdn-hotels.com/gdcs/production183/d1729/b37e0971-eaa0-46f7-b082-e8a4d81c3932.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://a.cdn-hotels.com/gdcs/production146/d587/84b2da7c-4656-4d52-a502-14f053ed3b14.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://a.cdn-hotels.com/gdcs/production17/d1614/81711b5f-9b03-4761-95f8-821bce062887.jpg?impolicy=fcrop&w=1600&h=1066&q=medium',
+                        'https://media.triple.guide/triple-cms/c_limit,f_auto,h_1024,w_1024/33be50e1-80f2-459a-a978-1ec248f21a5b.jpeg',
+                        'https://a.cdn-hotels.com/gdcs/production108/d1852/a4f35357-9c76-40ce-babe-200ee6584c31.jpg?impolicy=fcrop&w=1600&h=1066&q=medium'
+                    ]
+                };
+
+                const categoryDescriptions = {
+                    'category1': ['세운청계상가', '백범광장', '녹사평육교', '서울밤', 'G게스트하우스', '카페할아버지공장, 빈센조', '북촌 한옥마을', '남산타워', '덕수궁', '경복궁'],
+                    'category2': ['월미테마파크', '차이나타운', '부평문화의거리', '송도 센트럴 파크', '인천대교', '동화마을', '송도 한옥마을', '오이도 빨간등대', '송도 트라이 보울', '소래 습지생태공원'],
+                    'category3': ['아홉산 숲', '죽성드림세트장', '정심재(전 부산시장 관사)', '해동용궁사', '해운대', '감천 문화마을', '범어사', '자갈치시장', '다이아몬드타워', '동백섬']
+                };
+
+
+                galleryImages.forEach((image, index) => {
+                    image.src = categoryImages[category][index];
+                });
+
+                galleryImages.forEach((image, index) => {
+                    const container = image.closest('.image-container');
+                    const description = container.querySelector('.image-description');
+
+                    image.src = categoryImages[category][index];
+                    description.textContent = categoryDescriptions[category][index];
+                });
+
+
+            }
+            document.querySelectorAll('.image-container').forEach(container => {
+                container.addEventListener('mouseenter', () => {
+                    container.querySelector('.image-description').style.opacity = 1;
+                });
+                container.addEventListener('mouseleave', () => {
+                    container.querySelector('.image-description').style.opacity = 0;
+                });
+            });
+        </script>
+</body>
+
+</html>

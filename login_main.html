@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Brush+Script&family=Orbit&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 후 메인 화면</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Nanum Brush Script', cursive;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #f0f3fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    .wrapper {
+        z-index: 13;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100%;
+        width: 50%;
+        background: #D5DEEF;
+        transition: all 0.6s ease-in-out;
+    }
+
+    #active:checked~.wrapper {
+        right: 0;
+    }
+
+    .menu-btn {
+        position: absolute;
+        z-index: 14;
+        right: 10px;
+        top: 10px;
+        height: 50px;
+        width: 50px;
+        text-align: center;
+        line-height: 50px;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .menu-btn span,
+    .menu-btn:before,
+    .menu-btn:after {
+        content: "";
+        position: absolute;
+        top: calc(50% - 1px);
+        left: 30%;
+        width: 40%;
+        border-bottom: 2px solid #000;
+        transition: transform .6s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    .menu-btn:before {
+        transform: translateY(-8px);
+    }
+
+    .menu-btn:after {
+        transform: translateY(8px);
+    }
+
+    .close {
+        z-index: 13;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        transition: background .6s;
+    }
+
+    /* closing animation */
+    #active:checked+.menu-btn span {
+        transform: scaleX(0);
+    }
+
+    #active:checked+.menu-btn:before {
+        transform: rotate(45deg);
+        border-color: #fff;
+    }
+
+    #active:checked+.menu-btn:after {
+        transform: rotate(-45deg);
+        border-color: #fff;
+    }
+
+    .wrapper ul {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        height: 90%;
+        transform: translate(-50%, -50%);
+        list-style: none;
+        text-align: center;
+    }
+
+    .wrapper ul li {
+        height: 10%;
+        margin: 15px 0;
+    }
+
+    .wrapper ul li a {
+        width: 150px;
+        text-decoration: none;
+        font-size: 30px;
+        font-weight: 500;
+        padding: 5px 30px;
+        color: #000;
+        border-radius: 50px;
+        position: absolute;
+        line-height: 50px;
+        margin: 5px 30px;
+        opacity: 0;
+        transition: all 0.3s ease;
+        transition: transform .6s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    .wrapper ul li a:after {
+        position: absolute;
+        content: "";
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        transform: scaleY(0);
+        z-index: -1;
+        transition: transform 0.3s ease;
+    }
+
+    .wrapper ul li a:hover:after {
+        transform: scaleY(1);
+    }
+
+    .wrapper ul li a:hover {
+        background: #ffffff;
+    }
+
+    input[type="checkbox"] {
+        display: none;
+    }
+
+    .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 12;
+        text-align: center;
+        width: 100%;
+        color: #fff;
+    }
+
+    .content .title {
+        font-size: 40px;
+        font-weight: 700;
+    }
+
+    .content p {
+        font-size: 35px;
+        font-weight: 600;
+    }
+
+    .content img {
+         filter: drop-shadow(1px 1px 1px #fff); /* 흰색 드롭 섀도우 적용 */
+         width: 80px;
+         height: 80px;
+    }
+
+    #active:checked~.wrapper ul li a {
+        opacity: 11;
+    }
+
+    .wrapper ul li a {
+        transition: opacity 1.2s, transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+        transform: translateX(100px);
+    }
+
+    #active:checked~.wrapper ul li a {
+        transform: none;
+        transition-timing-function: ease, cubic-bezier(.1, 1.3, .3, 1);
+        transition-delay: .6s;
+        transform: translateX(-100px);
+    }
+
+    /* slider__wrap */
+    .slider__wrap {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+        }
+        .slider__img {  /* 이미지가 보이는 영역 */
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .slider__inner {    /* 이미지 움직이는 영역 */
+            display: flex;
+            flex-wrap: wrap;
+            width: 4800px;  /* 총 이미지 영역 */
+            height: 450px;
+        }
+        .slider img {   /* 개별적인 이미지 */
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 10;
+        }
+
+        .snowflake {
+            z-index: 11;
+            --size: 1vw;
+            width: var(--size);
+            height: var(--size);
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: -5vh;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translate3d(var(--left-ini), 0, 0);
+            }
+
+            100% {
+                transform: translate3d(var(--left-end), 110vh, 0);
+            }
+        }
+
+        .snowflake:nth-child(1) {
+            --size: 2vw;
+            --left-ini: -8vw;
+            --left-end: 3vw;
+            left: 21vw;
+            animation: snowfall 12s linear infinite;
+            animation-delay: -10s;
+        }
+
+        .snowflake:nth-child(2) {
+            --size: 1.6vw;
+            --left-ini: 2vw;
+            --left-end: 10vw;
+            left: 17vw;
+            animation: snowfall 9s linear infinite;
+            animation-delay: -9s;
+        }
+
+        .snowflake:nth-child(3) {
+            --size: 1.8vw;
+            --left-ini: -5vw;
+            --left-end: -7vw;
+            left: 78vw;
+            animation: snowfall 12s linear infinite;
+            animation-delay: -1s;
+        }
+
+        .snowflake:nth-child(4) {
+            --size: 1.2vw;
+            --left-ini: -1vw;
+            --left-end: -9vw;
+            left: 57vw;
+            animation: snowfall 6s linear infinite;
+            animation-delay: -9s;
+        }
+
+        .snowflake:nth-child(5) {
+            --size: 1.2vw;
+            --left-ini: 9vw;
+            --left-end: -1vw;
+            left: 39vw;
+            animation: snowfall 10s linear infinite;
+            animation-delay: -3s;
+        }
+
+        .snowflake:nth-child(6) {
+            --size: 1.8vw;
+            --left-ini: 3vw;
+            --left-end: -6vw;
+            left: 60vw;
+            animation: snowfall 10s linear infinite;
+            animation-delay: -1s;
+        }
+
+        .snowflake:nth-child(7) {
+            --size: 2vw;
+            --left-ini: -1vw;
+            --left-end: -4vw;
+            left: 89vw;
+            animation: snowfall 6s linear infinite;
+            animation-delay: -8s;
+        }
+
+        .snowflake:nth-child(8) {
+            --size: 2vw;
+            --left-ini: -4vw;
+            --left-end: -7vw;
+            left: 33vw;
+            animation: snowfall 11s linear infinite;
+            animation-delay: -2s;
+        }
+
+        .snowflake:nth-child(9) {
+            --size: 2vw;
+            --left-ini: -4vw;
+            --left-end: -4vw;
+            left: 78vw;
+            animation: snowfall 10s linear infinite;
+            animation-delay: -5s;
+        }
+
+        .snowflake:nth-child(10) {
+            --size: 1.6vw;
+            --left-ini: -3vw;
+            --left-end: 1vw;
+            left: 73vw;
+            animation: snowfall 15s linear infinite;
+            animation-delay: -7s;
+        }
+
+        .snowflake:nth-child(11) {
+            --size: 1.4vw;
+            --left-ini: 6vw;
+            --left-end: -1vw;
+            left: 62vw;
+            animation: snowfall 8s linear infinite;
+            animation-delay: -8s;
+        }
+
+        .snowflake:nth-child(12) {
+            --size: 1.4vw;
+            --left-ini: -1vw;
+            --left-end: 1vw;
+            left: 46vw;
+            animation: snowfall 14s linear infinite;
+            animation-delay: -10s;
+        }
+
+        .snowflake:nth-child(13) {
+            --size: 1.8vw;
+            --left-ini: 5vw;
+            --left-end: 0vw;
+            left: 28vw;
+            animation: snowfall 9s linear infinite;
+            animation-delay: -5s;
+        }
+
+        .snowflake:nth-child(14) {
+            --size: 1.8vw;
+            --left-ini: 0vw;
+            --left-end: -8vw;
+            left: 96vw;
+            animation: snowfall 9s linear infinite;
+            animation-delay: -5s;
+        }
+
+        .snowflake:nth-child(15) {
+            --size: 2vw;
+            --left-ini: 9vw;
+            --left-end: 4vw;
+            left: 48vw;
+            animation: snowfall 8s linear infinite;
+            animation-delay: -5s;
+        }
+
+        .snowflake:nth-child(16) {
+            --size: 1.6vw;
+            --left-ini: -2vw;
+            --left-end: 6vw;
+            left: 42vw;
+            animation: snowfall 11s linear infinite;
+            animation-delay: -3s;
+        }
+
+        .snowflake:nth-child(17) {
+            --size: 1.8vw;
+            --left-ini: -5vw;
+            --left-end: -5vw;
+            left: 11vw;
+            animation: snowfall 15s linear infinite;
+            animation-delay: -4s;
+        }
+
+        .snowflake:nth-child(18) {
+            --size: 2vw;
+            --left-ini: -5vw;
+            --left-end: 2vw;
+            left: 21vw;
+            animation: snowfall 6s linear infinite;
+            animation-delay: -5s;
+        }
+
+        .snowflake:nth-child(19) {
+            --size: 1.6vw;
+            --left-ini: -6vw;
+            --left-end: 0vw;
+            left: 66vw;
+            animation: snowfall 14s linear infinite;
+            animation-delay: -5s;
+        }
+
+        .snowflake:nth-child(20) {
+            --size: 1.8vw;
+            --left-ini: 7vw;
+            --left-end: -5vw;
+            left: 20vw;
+            animation: snowfall 9s linear infinite;
+            animation-delay: -4s;
+        }
+
+        .snowflake:nth-child(21) {
+            --size: 2vw;
+            --left-ini: 5vw;
+            --left-end: -9vw;
+            left: 50vw;
+            animation: snowfall 13s linear infinite;
+            animation-delay: -2s;
+        }
+
+        .snowflake:nth-child(22) {
+            --size: 1.8vw;
+            --left-ini: 3vw;
+            --left-end: 5vw;
+            left: 16vw;
+            animation: snowfall 12s linear infinite;
+            animation-delay: -8s;
+        }
+
+        .snowflake:nth-child(23) {
+            --size: 1.2vw;
+            --left-ini: -1vw;
+            --left-end: 5vw;
+            left: 89vw;
+            animation: snowfall 15s linear infinite;
+            animation-delay: -2s;
+        }
+
+        .snowflake:nth-child(24) {
+            --size: 1.2vw;
+            --left-ini: -8vw;
+            --left-end: -9vw;
+            left: 36vw;
+            animation: snowfall 13s linear infinite;
+            animation-delay: -9s;
+        }
+
+        .snowflake:nth-child(25) {
+            --size: 1.2vw;
+            --left-ini: -6vw;
+            --left-end: 0vw;
+            left: 100vw;
+            animation: snowfall 8s linear infinite;
+            animation-delay: -3s;
+        }
+
+        .snowflake:nth-child(26) {
+            --size: 2vw;
+            --left-ini: -4vw;
+            --left-end: 3vw;
+            left: 72vw;
+            animation: snowfall 9s linear infinite;
+            animation-delay: -3s;
+        }
+
+        .snowflake:nth-child(27) {
+            --size: 1.8vw;
+            --left-ini: -1vw;
+            --left-end: 0vw;
+            left: 23vw;
+            animation: snowfall 14s linear infinite;
+            animation-delay: -1s;
+        }
+
+        .snowflake:nth-child(28) {
+            --size: 1.2vw;
+            --left-ini: 8vw;
+            --left-end: -5vw;
+            left: 37vw;
+            animation: snowfall 13s linear infinite;
+            animation-delay: -5s;
+        }
+
+        .snowflake:nth-child(29) {
+            --size: 2vw;
+            --left-ini: 9vw;
+            --left-end: 8vw;
+            left: 61vw;
+            animation: snowfall 12s linear infinite;
+            animation-delay: -1s;
+        }
+
+        .snowflake:nth-child(30) {
+            --size: 2vw;
+            --left-ini: -4vw;
+            --left-end: -1vw;
+            left: 59vw;
+            animation: snowfall 11s linear infinite;
+            animation-delay: -10s;
+        }
+
+        .snowflake:nth-child(31) {
+            --size: 2vw;
+            --left-ini: 2vw;
+            --left-end: -3vw;
+            left: 54vw;
+            animation: snowfall 15s linear infinite;
+            animation-delay: -7s;
+        }
+
+        .snowflake:nth-child(32) {
+            --size: 2vw;
+            --left-ini: -4vw;
+            --left-end: -2vw;
+            left: 82vw;
+            animation: snowfall 6s linear infinite;
+            animation-delay: -6s;
+        }
+
+        .snowflake:nth-child(33) {
+            --size: 1.8vw;
+            --left-ini: 8vw;
+            --left-end: 4vw;
+            left: 16vw;
+            animation: snowfall 7s linear infinite;
+            animation-delay: -2s;
+        }
+
+        .snowflake:nth-child(34) {
+            --size: 1.8vw;
+            --left-ini: -8vw;
+            --left-end: -4vw;
+            left: 39vw;
+            animation: snowfall 15s linear infinite;
+            animation-delay: -10s;
+        }
+
+        .snowflake:nth-child(35) {
+            --size: 2vw;
+            --left-ini: -9vw;
+            --left-end: 6vw;
+            left: 40vw;
+            animation: snowfall 13s linear infinite;
+            animation-delay: -1s;
+        }
+
+        .snowflake:nth-child(36) {
+            --size: 1.4vw;
+            --left-ini: -6vw;
+            --left-end: -6vw;
+            left: 36vw;
+            animation: snowfall 15s linear infinite;
+            animation-delay: -7s;
+        }
+
+        .snowflake:nth-child(37) {
+            --size: 2.4vw;
+            --left-ini: -5vw;
+            --left-end: -6vw;
+            left: 90vw;
+            animation: snowfall 7s linear infinite;
+            animation-delay: -9s;
+        }
+
+        .snowflake:nth-child(38) {
+            --size: 2vw;
+            --left-ini: -8vw;
+            --left-end: -8vw;
+            left: 9vw;
+            animation: snowfall 7s linear infinite;
+            animation-delay: -6s;
+        }
+
+        .snowflake:nth-child(39) {
+            --size: 1.6vw;
+            --left-ini: 5vw;
+            --left-end: 3vw;
+            left: 83vw;
+            animation: snowfall 7s linear infinite;
+            animation-delay: -3s;
+        }
+
+        .snowflake:nth-child(40) {
+            --size: 1.6vw;
+            --left-ini: -2vw;
+            --left-end: 1vw;
+            left: 84vw;
+            animation: snowfall 9s linear infinite;
+            animation-delay: -3s;
+        }
+
+        .snowflake:nth-child(41) {
+            --size: 1.6vw;
+            --left-ini: -1vw;
+            --left-end: -8vw;
+            left: 73vw;
+            animation: snowfall 13s linear infinite;
+            animation-delay: -9s;
+        }
+
+        .snowflake:nth-child(42) {
+            --size: 1.2vw;
+            --left-ini: -4vw;
+            --left-end: 3vw;
+            left: 19vw;
+            animation: snowfall 13s linear infinite;
+            animation-delay: -10s;
+        }
+
+        .snowflake:nth-child(43) {
+            --size: 1.4vw;
+            --left-ini: -2vw;
+            --left-end: 4vw;
+            left: 80vw;
+            animation: snowfall 13s linear infinite;
+            animation-delay: -3s;
+        }
+
+        .snowflake:nth-child(44) {
+            --size: 1.8vw;
+            --left-ini: 6vw;
+            --left-end: -3vw;
+            left: 7vw;
+            animation: snowfall 8s linear infinite;
+            animation-delay: -9s;
+        }
+
+        .snowflake:nth-child(45) {
+            --size: 1.6vw;
+            --left-ini: -5vw;
+            --left-end: -7vw;
+            left: 60vw;
+            animation: snowfall 8s linear infinite;
+            animation-delay: -7s;
+        }
+
+        .snowflake:nth-child(46) {
+            --size: 1.2vw;
+            --left-ini: -4vw;
+            --left-end: -9vw;
+            left: 82vw;
+            animation: snowfall 12s linear infinite;
+            animation-delay: -7s;
+        }
+
+        .snowflake:nth-child(47) {
+            --size: 1.2vw;
+            --left-ini: -4vw;
+            --left-end: -2vw;
+            left: 56vw;
+            animation: snowfall 15s linear infinite;
+            animation-delay: -8s;
+        }
+
+        .snowflake:nth-child(48) {
+            --size: 1.6vw;
+            --left-ini: 8vw;
+            --left-end: -8vw;
+            left: 11vw;
+            animation: snowfall 15s linear infinite;
+            animation-delay: -10s;
+        }
+
+        .snowflake:nth-child(49) {
+            --size: 2vw;
+            --left-ini: 3vw;
+            --left-end: 8vw;
+            left: 24vw;
+            animation: snowfall 12s linear infinite;
+            animation-delay: -9s;
+        }
+
+        .snowflake:nth-child(50) {
+            --size: 2vw;
+            --left-ini: 7vw;
+            --left-end: -8vw;
+            left: 69vw;
+            animation: snowfall 12s linear infinite;
+            animation-delay: -3s;
+        }
+
+        /* added small blur every 6 snowflakes*/
+        .snowflake:nth-child(6n) {
+            filter: blur(1px);
+        }
+
+</style>
+
+<body>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="overlay"></div>
+    <main id="main">
+        <div class="slider__wrap">
+            <div class="slider__img">
+                <div class="slider__inner">
+                    <div class="slider s1"><img src="https://a.cdn-hotels.com/gdcs/production10/d571/3c9d0761-76f3-426a-a5a2-1c1497d3aaa5.jpg" alt="이미지3"></div>
+                    <div class="slider s2"><img src="https://cdn.pixabay.com/photo/2022/04/04/13/54/city-7111378_960_720.jpg" alt="이미지4"></div>
+                    <div class="slider s3"><img src="https://img.freepik.com/free-photo/haedong-yonggungsa-temple-and-haeundae-sea-in-busan-buddhist-temple-in-busan-south-korea_335224-436.jpg" alt="이미지6"></div>
+                    <div class="slider s4"><img src="https://gongu.copyright.or.kr/gongu/wrt/cmmn/wrtFileImageView.do?wrtSn=13048923&filePath=L2Rpc2sxL25ld2RhdGEvMjAxNy85OC9DTFM2L1dSVF9UUkVBU1VSRV9IVU5UXzIwMTcwOTExXzYx&thumbAt=Y&thumbSe=b_tbumb&wrtTy=10006" alt="이미지8"></div>
+                    <div class="slider s5"><img src="https://img.freepik.com/premium-photo/rocks-on-the-beach-with-clear-sea-water-at-seopjikoji-jeju-island-south-korea_36550-217.jpg" alt="이미지09"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        //선택자
+        const sliderWrap = document.querySelector(".slider__wrap");
+        const sliderImg = sliderWrap.querySelector(".slider__img");         //보여지는 영역
+        const sliderInner = sliderWrap.querySelector(".slider__inner");     //움직이는 영역
+        const slider = sliderWrap.querySelectorAll(".slider");              //개별 이미지
+    
+        let currentIndex = 0;                                               //현재 보이는 이미지
+        let sliderCount = slider.length;                                    //이미지 갯수
+        let sliderInterval = 2000;                                          //이미지 변경 간격 시간
+        let sliderWidth = window.innerWidth;
+        let sliderHeight = window.innerHeight;                     //이미지 가로 값
+        let sliderClone = sliderInner.firstElementChild.cloneNode(true);    //첫번째 이미지 복사
+    
+        // 복사한 첫 번째 이미지 마지막에 붙여넣기
+        sliderInner.appendChild(sliderClone);
+    
+        function sliderEffect(){
+            currentIndex++;
+    
+            sliderInner.style.transition = "all 0.6s";
+            sliderInner.style.transform = "translateX(-"+ sliderWidth * currentIndex +"px)";
+    
+            //마지막 이미지에 위치 했을 때
+            if(currentIndex == sliderCount){
+                setTimeout(() => {
+                    sliderInner.style.transition = "0s";
+                    sliderInner.style.transform = "translateX(0px)";
+                }, 700);
+    
+                currentIndex = 0;
+            }
+    
+        }
+    
+        setInterval(sliderEffect, sliderInterval);
+    </script>
+    <input type="checkbox" id="active">
+    <label for="active" class="menu-btn"><span></span></label>
+    <label for="active" class="close"></label>
+    <div class="wrapper">
+        <ul>
+            <li><a href="login_main.html">Home</a></li>
+            <li><a href="login_map.html">Map</a></li>
+            <li><a href="login_course.html">Course</a></li>
+            <li><a href="login_bulletin.html">Bulletin</a></li>
+            <li><a href="login_gallery.html">Gallery</a></li>
+            <li><a href="main.html">Logout</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <img src="https://cdn1.iconfinder.com/data/icons/sightseeing-tourist/500/asp1684b_6_map_sightseeing_icon_outline_vector_thin_line-128.png" alt="메인이미지">
+        <div class="title">하이 한국</div>
+        <p>WELCOME!</p>
+    </div>
+</body>

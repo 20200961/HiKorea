@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Nanum+Brush+Script&family=Orbit&display=swap" rel="stylesheet">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>로그인 후 게시판 화면</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Nanum Brush Script', cursive;
+        }
+
+        body {
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #f0f3fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .wrapper {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            height: 100%;
+            width: 50%;
+            background: #D5DEEF;
+            transition: all 0.6s ease-in-out;
+            z-index: 1;
+        }
+
+        #active:checked~.wrapper {
+            right: 0;
+        }
+
+        .menu-btn {
+            position: absolute;
+            z-index: 2;
+            right: 10px;
+            top: 10px;
+            height: 50px;
+            width: 50px;
+            text-align: center;
+            line-height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .menu-btn span,
+        .menu-btn:before,
+        .menu-btn:after {
+            content: "";
+            position: absolute;
+            top: calc(50% - 1px);
+            left: 30%;
+            width: 40%;
+            border-bottom: 2px solid #000;
+            transition: transform .6s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .menu-btn:before {
+            transform: translateY(-8px);
+        }
+
+        .menu-btn:after {
+            transform: translateY(8px);
+        }
+
+        .close {
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transition: background .6s;
+        }
+
+        /* closing animation */
+        #active:checked+.menu-btn span {
+            transform: scaleX(0);
+        }
+
+        #active:checked+.menu-btn:before {
+            transform: rotate(45deg);
+            border-color: #fff;
+        }
+
+        #active:checked+.menu-btn:after {
+            transform: rotate(-45deg);
+            border-color: #fff;
+        }
+
+        .wrapper ul {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            height: 90%;
+            transform: translate(-50%, -50%);
+            list-style: none;
+            text-align: center;
+        }
+
+        .wrapper ul li {
+            height: 10%;
+            margin: 15px 0;
+        }
+
+        .wrapper ul li a {
+            width: 150px;
+            text-decoration: none;
+            font-size: 30px;
+            font-weight: 500;
+            padding: 5px 30px;
+            color: #000;
+            border-radius: 50px;
+            position: absolute;
+            line-height: 50px;
+            margin: 5px 30px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            transition: transform .6s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+
+        .wrapper ul li a:after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            transform: scaleY(0);
+            z-index: -1;
+            transition: transform 0.3s ease;
+        }
+
+        .wrapper ul li a:hover:after {
+            transform: scaleY(1);
+        }
+
+        .wrapper ul li a:hover {
+            background: #ffffff;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        #active:checked~.wrapper ul li a {
+            opacity: 1;
+        }
+
+        .wrapper ul li a {
+            transition: opacity 1.2s, transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1);
+            transform: translateX(100px);
+        }
+
+        #active:checked~.wrapper ul li a {
+            transform: none;
+            transition-timing-function: ease, cubic-bezier(.1, 1.3, .3, 1);
+            transition-delay: .6s;
+            transform: translateX(-100px);
+        }
+
+        .container {
+            width: 100%;
+            height: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #B1C9EF;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        tr:nth-child(even) {
+            background: #D5DEEF;
+        }
+
+        #write-btn {
+            padding: 10px;
+            font-size: 18px;
+            color: black;
+            font-weight: bold;
+            background-color: #b8b8b8;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #write-btn:hover {
+            background-color: black;
+            color: #fff;
+        }
+
+        .desc {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            background: #B1C9EF;
+        }
+
+        hr {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            height: 150px;
+            line-height: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="checkbox" id="active">
+    <label for="active" class="menu-btn"><span></span></label>
+    <label for="active" class="close"></label>
+    <div class="wrapper">
+        <ul>
+            <li><a href="login_main.html">Home</a></li>
+            <li><a href="login_map.html">Map</a></li>
+            <li><a href="login_course.html">Course</a></li>
+            <li><a href="login_bulletin.html">Bulletin</a></li>
+            <li><a href="login_gallery.html">Gallery</a></li>
+            <li><a href="main.html">Logout</a></li>
+        </ul>
+    </div>
+    <div class="desc">
+        <h1>게시판</h1>
+        <hr>
+    </div>
+    <div class="container">
+        <table id="post-list">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>비고</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button id="write-btn">글 작성</button>
+    </div>
+    </div>
+
+    <script>
+        //"write-btn" ID를 가진 요소에 클릭 이벤트 리스너를 추가합니다. 이 리스너는 사용자가 버튼을 클릭할 때 실행됩니다.
+        document.getElementById('write-btn').addEventListener('click', function() {
+
+            // prompt 함수를 사용하여 사용자에게 제목을 입력하라는 창을 띄우고, 입력된 값을 title 변수에 저장합니다. 만약 입력이 취소되거나 비어있다면 함수에서 빠져나갑니다.
+            const title = prompt('제목을 입력해주세요.');
+            if (!title) {
+                return;
+            }
+
+            const author = prompt('작성자를 입력해주세요.');
+            if (!author) {
+                return;
+            }
+
+            const content = prompt('내용을 입력해주세요.');
+            if (!content) {
+                return;
+            }
+
+            const postData = {
+                title: title,
+                author: author,
+                content: content
+            };
+
+            // fetch 함수를 사용하여 'write_post.php'라는 URL로 POST 요청을 보냅니다. 이 때, method는 'POST'로 설정되어 있습니다. 또한, 헤더에는 JSON 형태의 데이터를 전송함을 명시하고, body에는 postData를 JSON 문자열로 변환하여 전송합니다.
+            fetch('write_post.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postData)
+                })
+                // 서버로부터 받은 응답을 JSON으로 파싱합니다.
+                .then((response) => response.json())
+                //파싱된 결과를 처리합니다. 서버에서 받은 JSON 데이터에는 작업의 성공 여부와 메시지 등이 포함되어 있을 것입니다. 성공하면 글이 작성되었다는 알림을 띄우고, loadPosts() 함수를 호출하여 글 목록을 다시 로드합니다. 실패한 경우 에러 메시지를 알림으로 띄웁니다.
+                .then((result) => {
+                    if (result.success) {
+                        alert('글이 작성되었습니다.');
+                        loadPosts();
+                    } else {
+                        alert('글 작성 실패: ' + result.message);
+                    }
+                })
+                // 네트워크 요청이 실패하거나 예상치 못한 에러가 발생한 경우, 콘솔에 에러 메시지를 출력합니다.
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        });
+
+
+        function deletePost(id) {
+            fetch('delete_post.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+
+                    //id를 넘겨준다., 그러므로 delete_post는 id를 받게된다.
+                    body: `id=${id}`,
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((result) => {
+                    if (result.success) {
+                        loadPosts();
+                    } else {
+                        console.error('Error:', result.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function loadPosts() {
+            //'get_posts.php'로부터 글 목록을 가져오기 위해 fetch 함수를 사용합니다. 이 부분은 앞서 설명한 코드와 유사하게 HTTP GET 요청을 보내고, 응답을 받아오는 부분입니다.
+            fetch('get_posts.php')
+                //서버로부터 받은 응답을 처리하는 부분입니다. 먼저 응답이 성공적인지 확인하고(!response.ok), 실패한 경우 에러를 던집니다. 그렇지 않으면 응답을 JSON으로 파싱합니다.
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                //파싱된 JSON 데이터를 받아와서 글 목록을 렌더링하는 부분입니다. 각 포스트에 대해 테이블의 행을 생성하고, 제목은 링크로 구성되어 있습니다. 이때, 각 제목에 해당하는 포스트로 이동할 수 있는 링크가 생성되어 있습니다. 나머지 열에는 포스트의 ID, 작성자, 작성일시 정보가 들어가고, 삭제 버튼이 있는 열도 추가됩니다.
+                .then((posts) => {
+                    const postList = document.getElementById('post-list').querySelector('tbody');
+                    postList.innerHTML = '';
+                    //posts 배열을 순회하며 각 post에 대해 콜백 함수를 실행합니다. 이 콜백 함수는 화살표 함수로 정의되어 있습니다.
+                    posts.forEach((post) => {
+                        const row = document.createElement('tr');
+                        const titleCell = document.createElement('td');
+                        const titleLink = document.createElement('a');
+                        titleLink.href = `post.html?id=${post.id}`; // 본문 읽기 페이지 링크
+                        titleLink.textContent = post.title;
+                        titleCell.appendChild(titleLink);
+
+                        row.innerHTML = `
+                <td>${post.id}</td>
+              `;
+                        row.appendChild(titleCell);
+                        row.innerHTML += `
+                <td>${post.author}</td>
+                <td>${post.created_at}</td>
+              `;
+                        const deleteCell = document.createElement('td');
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = '삭제';
+                        deleteBtn.onclick = () => deletePost(post.id);
+                        deleteCell.appendChild(deleteBtn);
+                        row.appendChild(deleteCell);
+
+                        postList.appendChild(row);
+                    });
+                })
+                //네트워크 요청이 실패하거나 예상치 못한 에러가 발생한 경우, 콘솔에 에러 메시지를 출력합니다.
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        loadPosts();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<report DB>
+(ID:USER, PW:1234, DBNAME:users , TABLENAME:user_information)
+
+1.DB생성
+sudo mysql –u root –p
+CREATE DATABASE users default CHARACTER SET UTF8;
+
+2.ID생성
+GRANT ALL PRIVILEGES ON users.* TO USER @localhost IDENTIFIED BY '1234';
+
+3. 로그인
+mysql -u USER -p
+
+4.데베 접속
+use users;
+
+5.테이블생성
+CREATE TABLE user_information(
+no bigint(100) unsigned not null auto_increment,
+email varchar(50) not null,
+password varchar(50) not null,
+name varchar(10) not null,
+phone_number varchar(20) not null,
+id varchar(50) not null,
+primary key (no)
+)DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
