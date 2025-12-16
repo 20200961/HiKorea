@@ -1,9 +1,14 @@
 하이, 한국 (Hi, Korea)
 <img width="1463" height="602" alt="image" src="https://github.com/user-attachments/assets/2d2bef99-54f6-4864-8e87-d29409fc0d6d" />
 
+<img width="1139" height="710" alt="image" src="https://github.com/user-attachments/assets/28af22d2-3ac9-449f-b586-3809c5617078" />
+
+<img width="556" height="529" alt="image" src="https://github.com/user-attachments/assets/6455b4f4-2579-4036-9034-cf6f589b5ee4" />
 
 
-한국 여행을 계획하는 분들을 위한 관광 정보 웹사이트입니다.
+
+
+한국 여행을 계획하는 분들을 위한 관광 정보 웹앱입니다.
 
 ```
 - 프로젝트 소개
