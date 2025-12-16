@@ -1,5 +1,6 @@
 하이, 한국 (Hi, Korea)
-![Uploading image.png…]()
+<img width="1463" height="602" alt="image" src="https://github.com/user-attachments/assets/2d2bef99-54f6-4864-8e87-d29409fc0d6d" />
+
 
 
 한국 여행을 계획하는 분들을 위한 관광 정보 웹사이트입니다.
