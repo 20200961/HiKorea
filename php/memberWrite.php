@@ -36,5 +36,5 @@
 	mysqli_close($mysqli);
 ?>
 <script>
-	location.href = "login.html";
+	location.href = "../html/login.html";
 </script>
